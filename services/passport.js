@@ -14,28 +14,20 @@ passport.deserializeUser((id, done) => {
   });
 });
 
+// this first step
 passport.use(
   new GoogleStrategy(
     {
       clientID: keys.googleClientID,
       clientSecret: keys.googleClientSecret,
       callbackURL: "/auth/google/callback",
-      proxy: true,
     },
-    (accessToken, refreshToken, profile, done) => {
-      User.findOne({ googleId: profile.id })
-        .then((founedUser) => {
-          if (founedUser) {
-            done(null, founedUser);
-          } else {
-            new User({ googleId: profile.id }).save().then((userDocument) => {
-              done(null, userDocument);
-            });
-          }
-        })
-        .catch((error) => {
-          console.log("Error while knowing the user");
-        });
-    }
-  )
-);
+    async (accessToken, refreshToken, profile, done) => {
+      const founedUser = await User.findOne({ googleId: profile.id });
+      if (founedUser) return done(null, founedUser);
+
+      const userDocument = await new User({ googleId: profile.id }).save();
+      done(null, userDocument);
+    } // end of async function
+  ) // end of Google strategy
+); // end of middleware

@@ -1,16 +1,17 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const userSchema = new Schema({
-  googleId: {
+const recipientSchema = new Schema({
+  email: {
     type: String,
     required: true,
   },
-  credits: {
-    type: Number,
-    default: 0,
+  responded: {
+    type: Boolean,
+    required: true,
+    default: false,
   },
 }); // end of Schema
 
 //model is a function I call and a model basically is important for mongoose behind the scenes to connect
 //a schema, a blueprint with a name basically,
-mongoose.model("users", userSchema);
+module.exports = recipientSchema;
